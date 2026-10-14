@@ -12,12 +12,14 @@ from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 from openai import AsyncOpenAI
 from pydantic import BaseModel
+from dotenv import load_dotenv
 
 ROOT = Path(__file__).parent
 WORKSPACE = ROOT / "workspace"
 MEMORY_FILE = ROOT / "memory.md"
 MCP_CONFIG = ROOT / "mcp_servers.json"
 
+load_dotenv()   
 
 # ---------------------------------------------------------------------------
 # Pillar 3: the model registry. Every entry is just an OpenAI-compatible
@@ -34,23 +36,28 @@ MODELS: dict[str, ModelConfig] = {
     "local": ModelConfig(
         base_url="http://localhost:11434/v1",
         api_key="ollama",
-        model="qwen2.5:3b",
+        model=os.getenv("MODEL"),
     ),
     "local-small": ModelConfig(
         base_url="http://localhost:11434/v1",
         api_key="ollama",
-        model="qwen3.5:2b",
+        model=os.getenv("MODEL_SMALL"),
+    ),
+    "local-medium": ModelConfig(
+        base_url="http://localhost:11434/v1",
+        api_key="ollama",
+        model=os.getenv("MODEL_MEDIUM"),
     ),
     "gpt": ModelConfig(
         base_url="https://api.openai.com/v1",
         api_key=os.getenv("OPENAI_API_KEY", ""),
-        model="gpt-5.2",
+        model="gpt-5-nano",
     ),
     "claude": ModelConfig(
         # Anthropic's OpenAI-compatible endpoint - same client works.
         base_url="https://api.anthropic.com/v1/",
         api_key=os.getenv("ANTHROPIC_API_KEY", ""),
-        model="claude-sonnet-5",
+        model="claude-haiku-5-5",
     ),
 }
 
