@@ -2,6 +2,8 @@ import os
 import sys
 import time
 import ollama
+import platform
+
 
 sys.stdout.reconfigure(encoding="utf-8")  # so emoji don't crash the Windows console
 
@@ -13,6 +15,18 @@ client = OpenAI(base_url="http://localhost:11434/v1", api_key="ollama")
 ollama_client = ollama.Client("http://127.0.0.1:11434")
 
 load_dotenv()  # Load environment variables from .env file 
+
+def native_ping():
+    system = platform.system()
+    if system == "Windows":
+        import winsound
+        winsound.MessageBeep()
+    elif system == "Darwin":  # macOS
+        os.system('afplay /System/Library/Sounds/Glass.aiff')
+    elif system == "Linux":
+        # Attempts to use standard Linux command line audio players
+        os.system('aplay -q /usr/share/sounds/alsa/Front_Center.wav > /dev/null 2>&1 || speaker-test -l 1 -t sine -f 1000 > /dev/null 2>&1')
+
 
 def chat(user_message: str, model: str = os.getenv("MODEL")) -> str:
     start_time = time.perf_counter()
@@ -79,9 +93,13 @@ if __name__ == "__main__":
             question = input("\nyou: ")
             if question.strip() == "":
                 question = "What are some interesting WW1 facts?"
+                
             model_choice = select_model()
             if model_choice:
                 print("\nassistant:", chat(question, model=model_choice))
+                native_ping()
+
+                
     except (EOFError, KeyboardInterrupt):
         print("\nbye!")
 
