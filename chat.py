@@ -90,7 +90,7 @@ if __name__ == "__main__":
     print(f"v0 assistant ({os.getenv('MODEL')}) - ctrl+c to quit")
     try:
         while True:
-            question = input("\nyou: ")
+            question = input("\nWhat would you like to know? ")
             if question.strip() == "":
                 question = "What are some interesting WW1 facts?"
                 
@@ -101,6 +101,6 @@ if __name__ == "__main__":
 
                 
     except (EOFError, KeyboardInterrupt):
-        print("\nbye!")
+        print("\nBye!")
 
 
